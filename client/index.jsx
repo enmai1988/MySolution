@@ -52,6 +52,7 @@ class App extends React.Component {
       this.setState({ ticketList: tickets });
       this.socket.emit('get wait time');
       this.socket.on('student wait time', data => this.setState({ statistic: data }));
+      this.hasClaimed();
     });
   }
 
