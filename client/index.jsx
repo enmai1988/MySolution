@@ -52,7 +52,7 @@ class App extends React.Component {
       this.setState({ ticketList: tickets });
       this.socket.emit('get wait time');
       this.socket.on('student wait time', data => this.setState({ statistic: data }));
-      this.hasClaimed();
+      this.hasClaimed(this.state.user.id);
     });
   }
 
@@ -119,14 +119,15 @@ class App extends React.Component {
     this.getTickets(option);
   }
 
-  hasClaimed() {
+  hasClaimed(id) {
     const ticketList = this.state.ticketList;
     for (let i = 0; i < ticketList.length; i++) {
-      if (ticketList[i].claimedBy === this.state.user.id) {
-        return this.setState({ hasClaimed: true });
+      if (ticketList[i].status !== 'Claimed') { break; }
+      if (ticketList[i].status === 'Claimed' && ticketList[i].claimedBy === id) {
+        return $('.claim_btn').prop('disabled', true);
       }
     }
-    this.setState({ hasClaimed: false });
+    return $('.claim_btn').prop('disabled', false);
   }
 
   render() {
