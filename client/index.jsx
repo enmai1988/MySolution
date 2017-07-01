@@ -66,7 +66,6 @@ class App extends React.Component {
 
   getTickets(option) {
     $.get('/api/tickets', option, (tickets) => {
-      console.log(tickets);
       this.setState({ ticketList: tickets });
       this.socket.emit('update adminStats');
       this.socket.emit('get wait time');

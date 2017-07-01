@@ -7,7 +7,6 @@ const displayAlert = function(message, type) {
   }, 3000);
 };
 
-const reducedToDay = date => date % 604800000 < 86400000;
 // const reducedToDay = date => date % 604800000 < 86400000;
 //
 // const computeAvgWaitTime = (tickets, mentors, userId) => {
@@ -57,45 +56,45 @@ const computeAvgWaitTime = (tickets) => {
   return Math.floor(sum / tickets.length / 3600 / 1000);
 };
 
-const computeAvgTicketOpeningTime = (tickets) => {
-  if (tickets.length <= 1) { return 0; }
-  let diff = [];
-  for (let i = 0; i < tickets.length - 1; i++) {
-    diff.push(Date.parse(tickets[i + 1].createdAt) - Date.parse(tickets[i].createdAt));
-  }
-  return diff.reduce((a, b) => { return a + b; }) / diff.length;
-};
-
-const computeCurrWaitTime = (totalAveWait, gap, index) => {
-  if (!gap) { return 0; }
-  return Math.floor((totalAveWait - gap) * index / 3600 / 1000);
-};
-
-
-const getAdminStats = (tickets) => {
-  const result = {
-    open: 0,
-    closed: 0,
-    popularCategory: '',
-    popularCategoryCount: 0
-  };
-
-  const categoryStorage = {};
-
-  tickets.forEach(ticket => {
-    let category = ticket.category;
-    ticket.status === 'Closed' ? result.closed++ : result.open++;
-
-    categoryStorage[category] ? categoryStorage[category]++ : categoryStorage[category] = 1;
-
-    if (categoryStorage[category] > result.popularCategoryCount) {
-      result.popularCategoryCount = categoryStorage[category];
-      result.popularCategory = category;
-    }
-  });
-  console.log('getAdminStats: ', result);
-  return result;
-};
+// const computeAvgTicketOpeningTime = (tickets) => {
+//   if (tickets.length <= 1) { return 0; }
+//   let diff = [];
+//   for (let i = 0; i < tickets.length - 1; i++) {
+//     diff.push(Date.parse(tickets[i + 1].createdAt) - Date.parse(tickets[i].createdAt));
+//   }
+//   return diff.reduce((a, b) => { return a + b; }) / diff.length;
+// };
+//
+// const computeCurrWaitTime = (totalAveWait, gap, index) => {
+//   if (!gap) { return 0; }
+//   return Math.floor((totalAveWait - gap) * index / 3600 / 1000);
+// };
+//
+//
+// const getAdminStats = (tickets) => {
+//   const result = {
+//     open: 0,
+//     closed: 0,
+//     popularCategory: '',
+//     popularCategoryCount: 0
+//   };
+//
+//   const categoryStorage = {};
+//
+//   tickets.forEach(ticket => {
+//     let category = ticket.category;
+//     ticket.status === 'Closed' ? result.closed++ : result.open++;
+//
+//     categoryStorage[category] ? categoryStorage[category]++ : categoryStorage[category] = 1;
+//
+//     if (categoryStorage[category] > result.popularCategoryCount) {
+//       result.popularCategoryCount = categoryStorage[category];
+//       result.popularCategory = category;
+//     }
+//   });
+//   console.log('getAdminStats: ', result);
+//   return result;
+// };
 
 const connectionCount = (students, mentors, admins) => {
   let res = {
@@ -108,10 +107,6 @@ const connectionCount = (students, mentors, admins) => {
 
 module.exports = {
   displayAlert: displayAlert,
-  computeCurrWaitTime: computeCurrWaitTime,
-  getAdminStats: getAdminStats,
   computeAvgWaitTime: computeAvgWaitTime,
-  computeAvgTicketOpeningTime: computeAvgTicketOpeningTime,
-  computeCurrWaitTime: computeCurrWaitTime,
   connectionCount: connectionCount
 };
