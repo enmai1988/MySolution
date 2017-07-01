@@ -21,13 +21,11 @@ module.exports = server => {
 
     socket.join(id);
 
-
-
-    // emit new student/menttor count to client
     io.emit('user connect', util.connectionCount(students, mentors, admins));
 
     console.log(`${Object.keys(students).length} students connected`);
     console.log(`${Object.keys(mentors).length} mentors connected`);
+    console.log(`${Object.keys(admins).length} admins connected`);
 
     socket.on('refresh', () => io.emit('update or submit ticket'));
 
@@ -72,7 +70,7 @@ module.exports = server => {
           return Ticket.count({
             where: {
               status: 'Closed',
-              createdAt: { $gte: Date.now() - 24 * 3600 * 1000 }
+              createdAt: { $gte: new Date(Date.now() - 24 * 3600 * 1000).toISOString() }
             }
           });
         })
@@ -99,6 +97,7 @@ module.exports = server => {
 
       console.log(`Disconnected, now ${Object.keys(students).length} students connected`);
       console.log(`Disconnected, now ${Object.keys(mentors).length} mentors connected`);
+      console.log(`Disconnected, now ${Object.keys(admins).length} admins connected`);
     });
   });
 };

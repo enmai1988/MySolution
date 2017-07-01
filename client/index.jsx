@@ -61,6 +61,7 @@ class App extends React.Component {
 
   getTickets(option) {
     $.get('/api/tickets', option, (tickets) => {
+      console.log(tickets.tickets);
       this.setState({ ticketList: tickets.tickets, statistic: _.extend(this.state.statistic, tickets.adminStatistics) });
       this.socket.emit('update adminStats');
       this.socket.on('student wait time', data => this.setState({ statistic: data }));
@@ -136,7 +137,7 @@ class App extends React.Component {
       status: status,
       createdAt: createdAt
     };
-    console.log('filering tickets...');
+
     this.getTickets(option);
   }
 
