@@ -1,5 +1,5 @@
-const displayAlert = function(message, type) {
-  document.querySelector('#alert_main').className = `alert alert-main alert-${type}`;
+var displayAlert = function(message, type) {
+  document.querySelector('#alert_main').className = 'alert alert-main alert-' + type;
   document.querySelector('#alert_main').textContent = message;
   document.querySelector('#alert_main').style.top = '0';
   setTimeout(() => {
