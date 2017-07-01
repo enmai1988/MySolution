@@ -30,35 +30,18 @@ module.exports = server => {
     socket.on('refresh', () => io.emit('update or submit ticket'));
 
     socket.on('get wait time', () => {
-      let totalAveWait = currAveGap = 0;
       Ticket.findAll({
         where: {
           status: 'Closed',
-          claimedAt: {
-            $not: null,
-          }
+          claimedAt: { $not: null },
+          createdAt: { $gt: new Date(new Date() - 24 * 60 * 60 * 1000) }
         }
       }).then(tickets => {
-        totalAveWait = util.computeAvgWaitTime(tickets);
-        console.log('totalAveWait: ', totalAveWait);
-        return Ticket.findAll({
-          where: {
-            status: 'Opened',
-            createdAt: {
-              $gte: new Date(new Date() - 24 * 3600 * 1000).toISOString()
-            }
-          },
-          order: [['createdAt', 'ASC']]
-        });
-      }).then(result => {
-        console.log('gap: ', currAveGap / 3600000);
-        result.forEach((ticket, index) =>{
-          let response = { waitTime: 0 };
-          if (index > Object.keys(mentors).length - 1) {
-            response.waitTime = util.computeCurrWaitTime(totalAveWait, currAveGap, index);
-          }
-          io.to(ticket.userId).emit('student wait time', response);
-        });
+        console.log(tickets);
+        let waitTime = util.computeAvgWaitTime(tickets);
+        let response = { waitTime: util.computeAvgWaitTime(tickets) };
+        console.log(waitTime);
+        io.emit('new wait time', response);
       });
     });
 
@@ -70,7 +53,7 @@ module.exports = server => {
           return Ticket.count({
             where: {
               status: 'Closed',
-              closedAt: { $gt: new Date(new Date() - 24 * 3600 * 1000) }
+              closedAt: { $gt: new Date(new Date() - 24 * 60 * 60 * 1000) }
             }
           });
         })
@@ -82,6 +65,14 @@ module.exports = server => {
           });
         });
     });
+
+    // logic has flaws
+    // socket.on('update adminStats', () => {
+    //   Ticket.findAll({ where: { createdAt: { $gt: new Date(new Date() - 24 * 60 * 60 * 1000) } } })
+    //     .then(result => {
+    //       io.emit('new adminStats', util.getAdminStats(result));
+    //     });
+    // });
 
     socket.on('disconnect', socket => {
       if (role === 'student') {

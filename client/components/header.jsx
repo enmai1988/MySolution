@@ -16,14 +16,14 @@ const Header = ({onlineUsers, user}) => {
         There are currently
         <span> {onlineUsers.mentor} mentors</span> and
         <span> {onlineUsers.student} students</span> online,
-        and the estimated wait time is <span>{waitTime} minutes</span>.
+        and the estimated wait time is <span>{onlineUsers.waitTime} minutes</span>.
       </h4>;
   }
 
   if (user && user.role === 'student') {
     welcome =
       <h4>
-        The estimated wait time is <span>{waitTime} minutes</span>.
+        The estimated wait time is <span>{onlineUsers.waitTime} minutes</span>.
       </h4>;
   }
 

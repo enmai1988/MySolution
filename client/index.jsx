@@ -52,6 +52,11 @@ class App extends React.Component {
 
     this.socket.on('new adminStats', data => this.setState({ statistic: data }));
 
+    this.socket.on('new wait time', data => {
+      let newStats = _.defaults(this.state.onlineUsers, data);
+      this.setState({ onlineUsers: newStats });
+    });
+
     this.socket.on('user connect', data => this.setState({ onlineUsers: data }));
 
     this.socket.on('user disconnect', data => this.setState({ onlineUsers: data }));
@@ -61,10 +66,10 @@ class App extends React.Component {
 
   getTickets(option) {
     $.get('/api/tickets', option, (tickets) => {
-      console.log(tickets.tickets);
-      this.setState({ ticketList: tickets.tickets, statistic: _.extend(this.state.statistic, tickets.adminStatistics) });
+      console.log(tickets);
+      this.setState({ ticketList: tickets });
       this.socket.emit('update adminStats');
-      this.socket.on('student wait time', data => this.setState({ statistic: data }));
+      this.socket.emit('get wait time');
       this.hasClaimed(this.state.user.id);
     });
   }
@@ -122,20 +127,27 @@ class App extends React.Component {
 
   filterTickets(e) {
     if (e) { e.preventDefault(); }
-    let timeWindow = document.getElementById('time-window').value;
+    let day = document.getElementById('time-window').value;
     let category = document.getElementById('select-category').value;
     let status = document.getElementById('ticket-status').value;
+    let type = 'createdAt';
 
-    let createdAt = timeWindow === 'All' ? { $lte: new Date().toISOString() }
-      : { $gte: new Date(new Date() - timeWindow * 24 * 60 * 60 * 1000).toISOString() };
+    let timeWindow = day === 'All' ? { $lte: new Date() }
+      : { $gte: new Date(new Date() - day * 24 * 60 * 60 * 1000) };
     if (category === 'All') { category = { $not: null }; }
-    if (status === 'All') { status = { $not: null }; }
+    if (status === 'All') {
+      status = { $not: null };
+    } else if (status === 'Closed') {
+      type = 'closedAt';
+    } else if (status === 'Claimed') {
+      type = 'claimedAt';
+    }
     let option = {
       id: this.state.user.id,
       role: this.state.user.role,
       category: category,
       status: status,
-      createdAt: createdAt
+      [type]: timeWindow
     };
 
     this.getTickets(option);
