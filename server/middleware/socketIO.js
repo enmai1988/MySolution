@@ -70,7 +70,7 @@ module.exports = server => {
           return Ticket.count({
             where: {
               status: 'Closed',
-              createdAt: { $gte: new Date(Date.now() - 24 * 3600 * 1000).toISOString() }
+              closedAt: { $gt: new Date(new Date() - 24 * 3600 * 1000) }
             }
           });
         })
