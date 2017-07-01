@@ -2,7 +2,7 @@ var displayAlert = function(message, type) {
   document.querySelector('#alert_main').className = 'alert alert-main alert-' + type;
   document.querySelector('#alert_main').textContent = message;
   document.querySelector('#alert_main').style.top = '0';
-  setTimeout(() => {
+  setTimeout(function() {
     document.querySelector('#alert_main').style.top = '-36px';
   }, 3000);
 };
