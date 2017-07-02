@@ -7,12 +7,13 @@ const RedisStore = require('connect-redis')(session);
 const middleware = require('./middleware');
 require('dotenv').config();
 
+let client = null;
 if (process.env.REDISTOGO_URL) {
-  var rtg = url.parse(process.env.REDISTOGO_URL);
-  var client = redis.createClient(rtg.port, rtg.hostname);
+  let rtg = url.parse(process.env.REDISTOGO_URL);
+  client = redis.createClient(rtg.port, rtg.hostname);
   client.auth(rtg.auth.split(':')[1]);
 } else {
-  var client = redis.createClient();
+  client = redis.createClient();
 }
 
 
