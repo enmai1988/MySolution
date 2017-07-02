@@ -1,17 +1,17 @@
 const {db, Ticket, User} = require ('../../database/');
 const util = require('../../helpers/util');
-const url = require('url');
+// const url = require('url');
 const socketIORedis = require('socket.io-redis');
 require('dotenv').config();
 
 module.exports = server => {
   const io = require('socket.io')(server, { cookie: true });
-  if (process.env.REDISTOGO_URL) {
-    let rtg = url.parse(process.env.REDISTOGO_URL);
-    io.adapter(socketIORedis({ port: rtg.port, host: rtg.hostname }));
-  } else {
-    io.adapter(socketIORedis({ host: 'localhost', port: 6379 }));
-  }
+  // if (process.env.REDISTOGO_URL) {
+  //   let rtg = url.parse(process.env.REDISTOGO_URL);
+  //   io.adapter(socketIORedis({ port: rtg.port, host: rtg.hostname }));
+  // } else {
+  //   io.adapter(socketIORedis({ host: 'localhost', port: 6379 }));
+  // }
   const students = {};
   const mentors = {};
   const admins = {};
