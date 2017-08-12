@@ -1,12 +1,12 @@
 const passport = require('passport');
 const Strategy = require('passport-github').Strategy;
 const User = require ('../../database/').User;
-require('dotenv').config();
+const config = require('config')['passport'];
 
 passport.use(new Strategy({
-  clientID: process.env.GITHUB_CLIENTID,
-  clientSecret: process.env.GITHUB_CLIENTSECRET,
-  callbackURL: `${process.env.URL}/api/auth/github/callback`
+  clientID: config.github.CLIENTID,
+  clientSecret: config.github.CLIENTSECRET,
+  callbackURL: config.github.CALLBACKURL
 }, (accessToken, refreshToken, profile, callback) => {
   User.find({
     where: { username: profile.username }

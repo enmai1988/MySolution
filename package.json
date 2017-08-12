@@ -1,14 +1,14 @@
 {
-  "name": "helpreactor",
+  "name": "mysolution",
   "version": "1.0.0",
-  "description": "",
+  "description": "interactive platform for students",
   "engines": {
     "node": "^6.11.0"
   },
   "scripts": {
     "react-dev": "webpack -d --watch",
     "server-dev": "nodemon server/index.js",
-    "start": "node ./server/index.js",
+    "start": "NODE_ENV=production nodemon ./server/index.js",
     "postinstall": "webpack -p --config ./webpack.config.js --progress && node ./database/migrate.js",
     "db-create": "initdb database/db",
     "db-start": "pg_ctl -D database/db -l logfile start",
@@ -30,6 +30,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.17.2",
+    "config": "^1.26.1",
     "connect-redis": "^3.3.0",
     "dotenv": "^4.0.0",
     "eslint": "^4.0.0",

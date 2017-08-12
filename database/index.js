@@ -1,12 +1,16 @@
 const Sequelize = require('sequelize');
-require('dotenv').config();
+const config = require('config')['sequelize'];
+const sampleData = require('./sampleData');
 
-let db = null;
+let db;
 
 if (process.env.DATABASE_URL) {
   db = new Sequelize(process.env.DATABASE_URL);
 } else {
-  db = new Sequelize('postgres:///helpReactor');
+  db = new Sequelize(config.connection.database, config.connection.user, config.connection.password, {
+    host: config.connection.host,
+    dialect: config.client
+  });
 }
 
 const Ticket = db.define('ticket', {
@@ -51,8 +55,11 @@ Ticket.belongsTo(User, {
   foreignKey: 'claimedBy'
 });
 
-module.exports = {
-  db: db,
-  Ticket: Ticket,
-  User: User
-};
+db.sync({ force: true })
+  .then(() => {
+    User.bulkCreate(sampleData.users).then(() => {
+      Ticket.bulkCreate(sampleData.tickets);
+    });
+  });
+
+module.exports = { db, User, Ticket };

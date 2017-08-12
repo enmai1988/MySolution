@@ -25,7 +25,6 @@ dist/
 config/
 database/db
 database/logfile
-database/helpReactor
 
 # Dependency directorys
 # Deployed apps should consider commenting these lines out:
@@ -37,7 +36,7 @@ bower_components/
 .DS_Store
 
 # Environment File
-.env
+config/
 
 
 .eslintignore
