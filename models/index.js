@@ -72,9 +72,4 @@ const createUser = (req, res) => {
     });
 };
 
-module.exports = {
-  createTicket: createTicket,
-  findTickets: findTickets,
-  updateTickets: updateTickets,
-  createUser: createUser
-};
+module.exports = { createTicket, findTickets, updateTickets, createUser };

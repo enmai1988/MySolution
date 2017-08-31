@@ -29,14 +29,10 @@ class App extends React.Component {
       type: 'GET',
       async: false,
       success: (response) => {
-        if (response.user) {
-          this.setState({
-            user: response.user,
-            isAuthenticated: true
-          });
-        } else if (response) {
-          this.setState({ user: response });
-        }
+        this.setState({
+          user: response.user,
+          isAuthenticated: response.isAuthenticated
+        });
       },
       error: () => {
         console.log('failed');

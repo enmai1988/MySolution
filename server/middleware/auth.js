@@ -1,33 +1,17 @@
 const passport = require('passport');
-const Strategy = require('passport-github').Strategy;
+const Strategy = require('passport-facebook').Strategy;
 const User = require ('../../database/').User;
 const config = require('config')['passport'];
 
-passport.use(new Strategy({
-  clientID: config.github.CLIENTID,
-  clientSecret: config.github.CLIENTSECRET,
-  callbackURL: config.github.CALLBACKURL
-}, (accessToken, refreshToken, profile, callback) => {
-  User.find({
-    where: { username: profile.username }
-  }).then(user => {
-    if (!user) { return callback(null, false); }
-    user.dataValues.avatarUrl = profile.photos[0].value;
-    return callback(null, user.dataValues);
-  });
-}));
-
-passport.serializeUser((user, callback) => {
-  callback(null, user);
+passport.serializeUser((profile, callback) => {
+  console.log('serializeUser: ', profile);
+  callback(null, profile.id);
 });
 
-passport.deserializeUser((user, callback) => {
-  User.find({
-    where: { username: user.username }
-  }).then(user => {
-    if (!user) { return callback(null, false); }
-    callback(null, user.dataValues);
-  });
+passport.deserializeUser((id, callback) => {
+  User.findById(id)
+    .then(user => callback(null, user.dataValues))
+    .catch(err => callback(null, false));
 });
 
 const isAuthenticated = (req, res, next) => {
@@ -38,7 +22,21 @@ const isAuthenticated = (req, res, next) => {
   }
 };
 
-module.exports = {
-  isAuthenticated: isAuthenticated,
-  githubAuth: passport
-};
+passport.use(new Strategy({
+  clientID: config.facebook.clientID,
+  clientSecret: config.facebook.clientSecret,
+  callbackURL: config.facebook.callbackURL,
+  profileFields: ['id', 'emails', 'name', 'picture']
+}, (accessToken, refreshToken, profile, callback) => {
+  User.findOrCreate({where: { username: profile.emails[0].value }, defaults: {
+    firstName: profile.name.givenName,
+    lastName: profile.name.familyName,
+    avatarUrl: profile.photos[0].value,
+    username: profile.emails[0].value,
+    role: 'admin'
+  }})
+    .spread((user, created) => callback(null, user.dataValues))
+    .catch(err => callback(null, false));
+}));
+
+module.exports = { isAuthenticated, passport };

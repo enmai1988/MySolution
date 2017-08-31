@@ -22,6 +22,8 @@ const server = require('http').Server(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ store: new RedisStore({ client }), secret: 'secret', resave: true, saveUninitialized: true }));
+app.use(middleware.auth.passport.initialize());
+app.use(middleware.auth.passport.session());
 
 app.use(middleware.router);
 
