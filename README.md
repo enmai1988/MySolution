@@ -1,4 +1,4 @@
-# Help Reactor
+# Help Desk v2.0
 
 A help desk application used by Hack Reactor students.
 
